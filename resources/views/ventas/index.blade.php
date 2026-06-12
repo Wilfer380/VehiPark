@@ -110,7 +110,7 @@
 
         <form method="GET" action="{{ route('ventas.index') }}" class="sales-filter-bar">
             <div class="filter-input-wrap sales-search">
-                <input class="filter-input" type="search" name="q" value="{{ $search }}" placeholder="Buscar factura, cliente, documento, vehiculo o placa...">
+                <input class="filter-input" type="search" name="q" value="{{ $search }}" placeholder="Buscar factura (#id), cliente, documento, vehiculo o placa...">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="6.5" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
             </div>
             <select class="filter-select" name="estado" onchange="this.form.submit()">
@@ -118,8 +118,11 @@
                     <option value="{{ $value }}" @selected($estado === $value)>Estado: {{ $label }}</option>
                 @endforeach
             </select>
-            <select class="filter-select" name="asesor" disabled>
-                <option>Todos los asesores</option>
+            <select class="filter-select" name="asesor" onchange="this.form.submit()">
+                <option value="todos" @selected(($asesor ?? 'todos') === 'todos')>Asesor: Todos</option>
+                @foreach ($asesores as $item)
+                    <option value="{{ $item->id }}" @selected((string) ($asesor ?? 'todos') === (string) $item->id)>Asesor: {{ $item->name }}</option>
+                @endforeach
             </select>
             <input class="filter-input" type="date" name="desde" value="{{ $desde }}" onchange="this.form.submit()" aria-label="Desde">
             <input class="filter-input" type="date" name="hasta" value="{{ $hasta }}" onchange="this.form.submit()" aria-label="Hasta">

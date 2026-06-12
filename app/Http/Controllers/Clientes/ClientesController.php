@@ -7,6 +7,7 @@ use App\Http\Requests\Clientes\StoreClienteRequest;
 use App\Http\Requests\Clientes\UpdateClienteRequest;
 use App\Models\Cliente;
 use App\Models\Venta;
+use App\Support\Excel\ManualXlsxBuilder;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
@@ -212,7 +213,7 @@ class ClientesController extends Controller
             ];
         })->values()->all();
 
-        return $this->buildZipArchive([
+        return ManualXlsxBuilder::build([
             '[Content_Types].xml' => $this->clientesContentTypesXml(),
             '_rels/.rels' => $this->clientesRelsXml(),
             'docProps/app.xml' => $this->clientesAppXml(),
@@ -226,8 +227,8 @@ class ClientesController extends Controller
 
     private function clientesSheetXml(array $rows): string
     {
-        $title = $this->xmlEscape('Reporte de clientes - VehiPark');
-        $subtitle = $this->xmlEscape('Exportado el ' . now()->format('d/m/Y H:i') . ' · Registros: ' . count($rows));
+        $title = ManualXlsxBuilder::escape('Reporte de clientes - VehiPark');
+        $subtitle = ManualXlsxBuilder::escape('Exportado el ' . now()->format('d/m/Y H:i') . ' · Registros: ' . count($rows));
 
         $headerLabels = [
             'Nombre completo',
@@ -392,115 +393,7 @@ class ClientesController extends Controller
 
     private function xlsxRow(int $rowNumber, array $values, ?int $styleId = null): string
     {
-        $xml = '<row r="' . $rowNumber . '" spans="1:15">';
-
-        foreach ($values as $index => $value) {
-            $column = $this->xlsxColumn($index + 1);
-            $cellRef = $column . $rowNumber;
-            $styleAttribute = $styleId === null ? '' : ' s="' . $styleId . '"';
-            $xml .= '<c r="' . $cellRef . '" t="inlineStr"' . $styleAttribute . '><is><t xml:space="preserve">' . $this->xmlEscape((string) $value) . '</t></is></c>';
-        }
-
-        return $xml . '</row>';
-    }
-
-    private function xlsxColumn(int $index): string
-    {
-        $column = '';
-
-        while ($index > 0) {
-            $index--;
-            $column = chr(65 + ($index % 26)) . $column;
-            $index = intdiv($index, 26);
-        }
-
-        return $column;
-    }
-
-    private function xmlEscape(string $value): string
-    {
-        return htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-    }
-
-    private function buildZipArchive(array $files): string
-    {
-        $data = '';
-        $centralDirectory = '';
-        $offset = 0;
-
-        foreach ($files as $name => $content) {
-            $name = str_replace('\\', '/', $name);
-            $content = (string) $content;
-            $nameLength = strlen($name);
-            $contentLength = strlen($content);
-            $crc = crc32($content);
-            if ($crc < 0) {
-                $crc += 4294967296;
-            }
-
-            $localHeader =
-                $this->zipPack32(0x04034b50) .
-                $this->zipPack16(20) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32($crc) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack16($nameLength) .
-                $this->zipPack16(0) .
-                $name .
-                $content;
-
-            $data .= $localHeader;
-
-            $centralDirectory .=
-                $this->zipPack32(0x02014b50) .
-                $this->zipPack16(20) .
-                $this->zipPack16(20) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32($crc) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack16($nameLength) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32(0) .
-                $this->zipPack32($offset) .
-                $name;
-
-            $offset += strlen($localHeader);
-        }
-
-        $centralDirectoryOffset = strlen($data);
-        $data .= $centralDirectory;
-        $data .=
-            $this->zipPack32(0x06054b50) .
-            $this->zipPack16(0) .
-            $this->zipPack16(0) .
-            $this->zipPack16(count($files)) .
-            $this->zipPack16(count($files)) .
-            $this->zipPack32(strlen($centralDirectory)) .
-            $this->zipPack32($centralDirectoryOffset) .
-            $this->zipPack16(0);
-
-        return $data;
-    }
-
-    private function zipPack16(int $value): string
-    {
-        return pack('v', $value & 0xffff);
-    }
-
-    private function zipPack32(int $value): string
-    {
-        return pack('V', $value & 0xffffffff);
+        return ManualXlsxBuilder::row($rowNumber, $values, $styleId);
     }
 
 }

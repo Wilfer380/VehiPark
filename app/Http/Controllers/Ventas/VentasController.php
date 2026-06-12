@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Ventas\VentaRequest;
 use App\Models\Cliente;
 use App\Models\Pago;
+use App\Models\User;
 use App\Models\Vehiculo;
 use App\Models\Venta;
 use App\Services\Ventas\VentaService;
+use App\Support\Excel\ManualXlsxBuilder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -22,15 +24,21 @@ class VentasController extends Controller
 
     public function index(Request $request): View
     {
-        [$ventasQuery, $search, $estado, $desde, $hasta] = $this->ventasQuery($request);
+        [$ventasQuery, $search, $estado, $desde, $hasta, $asesor] = $this->ventasQuery($request);
 
         $ventas = $ventasQuery->paginate(8)->withQueryString();
         $stats = $this->stats();
         $dashboard = $this->dashboardData();
         $clientes = Cliente::query()->orderBy('nombres')->get();
         $vehiculos = $this->vehiculosParaVentaQuery()->get();
+        $asesores = User::query()
+            ->where(function ($query) {
+                $query->where('role', 'vendedor')->orWhereHas('roles', fn ($roles) => $roles->where('name', 'vendedor'));
+            })
+            ->orderBy('name')
+            ->get();
 
-        return view('ventas.index', compact('ventas', 'stats', 'dashboard', 'search', 'estado', 'desde', 'hasta', 'clientes', 'vehiculos'));
+        return view('ventas.index', compact('ventas', 'stats', 'dashboard', 'search', 'estado', 'desde', 'hasta', 'asesor', 'clientes', 'vehiculos', 'asesores'));
     }
 
     public function create(): View
@@ -117,7 +125,7 @@ class VentasController extends Controller
     }
 
     /**
-     * @return array{0:\Illuminate\Database\Eloquent\Builder,1:string,2:string,3:string,4:string}
+     * @return array{0:\Illuminate\Database\Eloquent\Builder,1:string,2:string,3:string,4:string,5:string}
      */
     private function ventasQuery(Request $request): array
     {
@@ -125,6 +133,7 @@ class VentasController extends Controller
         $estado = (string) $request->query('estado', 'todos');
         $desde = (string) $request->query('desde', '');
         $hasta = (string) $request->query('hasta', '');
+        $asesor = (string) $request->query('asesor', 'todos');
 
         $query = Venta::query()
             ->with(['cliente', 'vehiculo', 'vendedor'])
@@ -134,6 +143,8 @@ class VentasController extends Controller
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
+                $invoiceDigits = preg_replace('/\D+/', '', $search);
+
                 $q->whereHas('cliente', function ($cliente) use ($search) {
                     $cliente->where('nombres', 'like', "%{$search}%")
                         ->orWhere('apellidos', 'like', "%{$search}%")
@@ -143,6 +154,10 @@ class VentasController extends Controller
                         ->orWhere('modelo', 'like', "%{$search}%")
                         ->orWhere('placa', 'like', "%{$search}%");
                 });
+
+                if ($invoiceDigits !== '') {
+                    $q->orWhereKey((int) $invoiceDigits);
+                }
             });
         }
 
@@ -158,7 +173,11 @@ class VentasController extends Controller
             $query->whereDate('fecha_venta', '<=', $hasta);
         }
 
-        return [$query, $search, $estado, $desde, $hasta];
+        if ($asesor !== 'todos') {
+            $query->where('vendedor_id', (int) $asesor);
+        }
+
+        return [$query, $search, $estado, $desde, $hasta, $asesor];
     }
 
     private function stats(): array
@@ -278,7 +297,7 @@ class VentasController extends Controller
             ];
         })->values()->all();
 
-        return $this->buildZipArchive([
+        return ManualXlsxBuilder::build([
             '[Content_Types].xml' => $this->ventasContentTypesXml(),
             '_rels/.rels' => $this->ventasRelsXml(),
             'docProps/app.xml' => $this->ventasAppXml(),
@@ -292,8 +311,8 @@ class VentasController extends Controller
 
     private function ventasSheetXml(array $rows): string
     {
-        $title = $this->xmlEscape('Reporte de ventas - VehiPark');
-        $subtitle = $this->xmlEscape('Exportado el ' . now()->format('d/m/Y H:i') . ' · Registros: ' . count($rows));
+        $title = ManualXlsxBuilder::escape('Reporte de ventas - VehiPark');
+        $subtitle = ManualXlsxBuilder::escape('Exportado el ' . now()->format('d/m/Y H:i') . ' · Registros: ' . count($rows));
 
         $headerLabels = [
             'Venta',
@@ -453,114 +472,7 @@ class VentasController extends Controller
 
     private function xlsxRow(int $rowNumber, array $values, ?int $styleId = null): string
     {
-        $xml = '<row r="' . $rowNumber . '" spans="1:14">';
-
-        foreach ($values as $index => $value) {
-            $column = $this->xlsxColumn($index + 1);
-            $styleAttribute = $styleId === null ? '' : ' s="' . $styleId . '"';
-            $xml .= '<c r="' . $column . $rowNumber . '" t="inlineStr"' . $styleAttribute . '><is><t xml:space="preserve">' . $this->xmlEscape((string) $value) . '</t></is></c>';
-        }
-
-        return $xml . '</row>';
-    }
-
-    private function xlsxColumn(int $index): string
-    {
-        $column = '';
-
-        while ($index > 0) {
-            $index--;
-            $column = chr(65 + ($index % 26)) . $column;
-            $index = intdiv($index, 26);
-        }
-
-        return $column;
-    }
-
-    private function xmlEscape(string $value): string
-    {
-        return htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-    }
-
-    private function buildZipArchive(array $files): string
-    {
-        $data = '';
-        $centralDirectory = '';
-        $offset = 0;
-
-        foreach ($files as $name => $content) {
-            $name = str_replace('\\', '/', $name);
-            $content = (string) $content;
-            $nameLength = strlen($name);
-            $contentLength = strlen($content);
-            $crc = crc32($content);
-            if ($crc < 0) {
-                $crc += 4294967296;
-            }
-
-            $localHeader =
-                $this->zipPack32(0x04034b50) .
-                $this->zipPack16(20) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32($crc) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack16($nameLength) .
-                $this->zipPack16(0) .
-                $name .
-                $content;
-
-            $data .= $localHeader;
-
-            $centralDirectory .=
-                $this->zipPack32(0x02014b50) .
-                $this->zipPack16(20) .
-                $this->zipPack16(20) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32($crc) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack32($contentLength) .
-                $this->zipPack16($nameLength) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack16(0) .
-                $this->zipPack32(0) .
-                $this->zipPack32($offset) .
-                $name;
-
-            $offset += strlen($localHeader);
-        }
-
-        $centralDirectoryOffset = strlen($data);
-        $data .= $centralDirectory;
-        $data .=
-            $this->zipPack32(0x06054b50) .
-            $this->zipPack16(0) .
-            $this->zipPack16(0) .
-            $this->zipPack16(count($files)) .
-            $this->zipPack16(count($files)) .
-            $this->zipPack32(strlen($centralDirectory)) .
-            $this->zipPack32($centralDirectoryOffset) .
-            $this->zipPack16(0);
-
-        return $data;
-    }
-
-    private function zipPack16(int $value): string
-    {
-        return pack('v', $value & 0xffff);
-    }
-
-    private function zipPack32(int $value): string
-    {
-        return pack('V', $value & 0xffffffff);
+        return ManualXlsxBuilder::row($rowNumber, $values, $styleId);
     }
 
     private function money(float $value): string
