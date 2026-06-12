@@ -248,14 +248,13 @@ class ClientesController extends Controller
         ];
 
         $sheetRows = [];
-        $sheetRows[] = $this->xlsxRow(1, [$title], 1, 1, false);
-        $sheetRows[] = $this->xlsxRow(2, [$subtitle], 2, 2, false);
-        $sheetRows[] = $this->xlsxRow(3, $headerLabels, 3, 3, false);
+        $sheetRows[] = $this->xlsxRow(1, [$title]);
+        $sheetRows[] = $this->xlsxRow(2, [$subtitle]);
+        $sheetRows[] = $this->xlsxRow(3, $headerLabels);
 
         foreach ($rows as $index => $row) {
             $rowNumber = $index + 4;
-            $isOdd = $index % 2 === 1;
-            $sheetRows[] = $this->xlsxRow($rowNumber, $row, $isOdd ? 5 : 4, $isOdd ? 7 : 6, $isOdd ? 9 : 8);
+            $sheetRows[] = $this->xlsxRow($rowNumber, $row);
         }
 
         $lastRow = count($rows) + 3;
@@ -285,7 +284,6 @@ class ClientesController extends Controller
             . '</cols>'
             . '<sheetData>' . implode('', $sheetRows) . '</sheetData>'
             . $autoFilter
-            . '<mergeCells count="2"><mergeCell ref="A1:O1"/><mergeCell ref="A2:O2"/></mergeCells>'
             . '<pageMargins left="0.3" right="0.3" top="0.6" bottom="0.6" header="0.3" footer="0.3"/>'
             . '</worksheet>';
     }
@@ -363,48 +361,35 @@ class ClientesController extends Controller
     {
         return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
             . '<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
-            . '<fonts count="4">'
+            . '<fonts count="1">'
             . '<font><sz val="11"/><name val="Calibri"/></font>'
-            . '<font><b/><sz val="14"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
-            . '<font><i/><sz val="10"/><color rgb="FF155E75"/><name val="Calibri"/></font>'
-            . '<font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>'
             . '</fonts>'
-            . '<fills count="5">'
+            . '<fills count="3">'
             . '<fill><patternFill patternType="none"/></fill>'
             . '<fill><patternFill patternType="gray125"/></fill>'
             . '<fill><patternFill patternType="solid"><fgColor rgb="FF0F766E"/><bgColor indexed="64"/></patternFill></fill>'
-            . '<fill><patternFill patternType="solid"><fgColor rgb="FF1E293B"/><bgColor indexed="64"/></patternFill></fill>'
-            . '<fill><patternFill patternType="solid"><fgColor rgb="FFF8FAFC"/><bgColor indexed="64"/></patternFill></fill>'
             . '</fills>'
             . '<borders count="1">'
-            . '<border><left style="thin"><color rgb="FFD1D5DB"/></left><right style="thin"><color rgb="FFD1D5DB"/></right><top style="thin"><color rgb="FFD1D5DB"/></top><bottom style="thin"><color rgb="FFD1D5DB"/></bottom><diagonal/></border>'
+            . '<border><left/><right/><top/><bottom/><diagonal/></border>'
             . '</borders>'
             . '<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>'
-            . '<cellXfs count="10">'
+            . '<cellXfs count="1">'
             . '<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>'
-            . '<xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
-            . '<xf numFmtId="0" fontId="2" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf>'
-            . '<xf numFmtId="0" fontId="3" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>'
-            . '<xf numFmtId="0" fontId="0" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="top" wrapText="1"/></xf>'
             . '</cellXfs>'
+            . '<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>'
+            . '<dxfs count="0"/>'
+            . '<tableStyles count="0" defaultTableStyle="TableStyleMedium2" defaultPivotStyle="PivotStyleLight16"/>'
             . '</styleSheet>';
     }
 
-    private function xlsxRow(int $rowNumber, array $values, int $styleId, int $centerStyleId, int $wrapStyleId): string
+    private function xlsxRow(int $rowNumber, array $values): string
     {
         $xml = '<row r="' . $rowNumber . '" spans="1:15">';
 
         foreach ($values as $index => $value) {
             $column = $this->xlsxColumn($index + 1);
             $cellRef = $column . $rowNumber;
-            $isWrapColumn = $index === 14;
-            $cellStyleId = $isWrapColumn ? $wrapStyleId : ($index >= 9 && $index <= 13 ? $centerStyleId : $styleId);
-            $xml .= '<c r="' . $cellRef . '" t="inlineStr" s="' . $cellStyleId . '"><is><t xml:space="preserve">' . $this->xmlEscape((string) $value) . '</t></is></c>';
+            $xml .= '<c r="' . $cellRef . '" t="inlineStr"><is><t xml:space="preserve">' . $this->xmlEscape((string) $value) . '</t></is></c>';
         }
 
         return $xml . '</row>';
