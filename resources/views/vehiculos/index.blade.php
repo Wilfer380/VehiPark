@@ -47,7 +47,28 @@
         ];
     @endphp
 
-    <section class="vehicles-page">
+    <section class="vehicles-page" x-data="{
+        selectedVehicles: [],
+        selectAll: false,
+        query: @js(request()->query()),
+        exportHref() {
+            const params = new URLSearchParams(this.query);
+            if (this.selectedVehicles.length) {
+                params.set('ids', this.selectedVehicles.join(','));
+            } else {
+                params.delete('ids');
+            }
+            return `{{ route('vehiculos.exportar') }}?${params.toString()}`;
+        },
+        toggleAll(checked, ids) {
+            this.selectAll = checked;
+            this.selectedVehicles = checked ? ids.map(String) : [];
+        },
+        syncSelectAll(ids) {
+            const normalized = ids.map(String);
+            this.selectAll = normalized.length > 0 && normalized.every(id => this.selectedVehicles.includes(id));
+        }
+    }">
         <div class="vehicles-header">
             <div>
                 <h1 class="page-title">Vehículos</h1>
@@ -110,11 +131,16 @@
                 @endforeach
             </select>
 
-            <a href="{{ route('vehiculos.exportar', request()->query()) }}" class="btn-export">
+            <a :href="exportHref()" class="btn-export">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17v2h14v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                <span>Exportar CSV</span>
+                <span>Exportar Excel</span>
             </a>
         </form>
+
+        <div class="vehicle-export-selection">
+            <input type="checkbox" :checked="selectAll" @change="toggleAll($event.target.checked, @js($vehiculos->pluck('id')->all()))">
+            <span>Selecciona uno o varios vehículos para exportar solo esos registros</span>
+        </div>
 
         @if (session('status'))
             <div class="crud-alert">{{ session('status') }}</div>
@@ -125,6 +151,7 @@
                 <table class="vehicle-table">
                     <thead>
                         <tr>
+                            <th style="width:44px;"><input type="checkbox" :checked="selectAll" @change="toggleAll($event.target.checked, @js($vehiculos->pluck('id')->all()))"></th>
                             <th>Vehículo</th>
                             <th>Placa</th>
                             <th>Tipo</th>
@@ -147,6 +174,9 @@
                                 $thumb = $vehiculo->imagen ? route('vehiculos.imagen', ['vehiculo' => $vehiculo, 'v' => optional($vehiculo->updated_at)->timestamp]) : null;
                             @endphp
                             <tr>
+                                <td style="width:44px;">
+                                    <input type="checkbox" :value="{{ $vehiculo->id }}" x-model="selectedVehicles" @change="syncSelectAll(@js($vehiculos->pluck('id')->all()))" style="width:16px;height:16px;accent-color:#3B82F6;">
+                                </td>
                                 <td>
                                     <div class="vehicle-info">
                                         @if ($thumb)
@@ -183,7 +213,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="12" style="padding:20px 16px;color:#94A3B8;">No hay vehículos registrados.</td></tr>
+                            <tr><td colspan="13" style="padding:20px 16px;color:#94A3B8;">No hay vehículos registrados.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -218,8 +248,9 @@
             .vehicle-stats-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:18px}
             .vehicle-stat-card{min-height:116px;padding:18px 20px;border-radius:12px;background:linear-gradient(180deg,rgba(30,41,59,.94),rgba(15,23,42,.96));border:1px solid rgba(148,163,184,.16);box-shadow:0 16px 36px rgba(0,0,0,.18);display:flex;flex-direction:column;justify-content:space-between}
             .vehicle-filters{display:grid;grid-template-columns:2fr .8fr .8fr .8fr auto auto;gap:12px;padding:14px 16px;border-radius:12px;background:rgba(15,23,42,.72);border:1px solid rgba(148,163,184,.16);margin-bottom:14px;align-items:center}
+            .vehicle-export-selection{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:#CBD5E1;font-size:13px}
             .vehicle-table-card{border-radius:12px;background:linear-gradient(180deg,rgba(30,41,59,.94),rgba(15,23,42,.96));border:1px solid rgba(148,163,184,.16);box-shadow:0 16px 36px rgba(0,0,0,.18);overflow:hidden}
-            .vehicle-table{width:100%;border-collapse:collapse;min-width:1320px}
+            .vehicle-table{width:100%;border-collapse:collapse;min-width:1360px}
             .vehicle-table thead{background:rgba(15,23,42,.54)}
             .vehicle-table th{padding:14px 16px;text-align:left;color:#E2E8F0;font-size:13px;font-weight:700}
             .vehicle-table td{padding:14px 16px;color:#CBD5E1;font-size:13px;border-top:1px solid rgba(148,163,184,.10);vertical-align:middle}
