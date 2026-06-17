@@ -15,14 +15,16 @@
 
     .auth-shell--login .auth-shell__backdrop {
         background-image:
-            linear-gradient(90deg, rgba(80, 70, 180, 0.35), rgba(238, 243, 255, 0.68)),
-            url('/resources/backgrounds/vehipark-auth-login.svg');
+            linear-gradient(90deg, rgba(238, 243, 255, 0.02), rgba(238, 243, 255, 0.14)),
+            url('/assets/images/auth/vehipark-login-bg-5.jpg');
+        background-position: left center;
     }
 
     .auth-shell--register .auth-shell__backdrop {
         background-image:
-            linear-gradient(90deg, rgba(238, 243, 255, 0.76), rgba(220, 230, 255, 0.55), rgba(124, 58, 237, 0.16)),
-            url('/resources/backgrounds/vehipark-auth-register.svg');
+            linear-gradient(90deg, rgba(238, 243, 255, 0.18), rgba(219, 234, 254, 0.14), rgba(124, 58, 237, 0.04)),
+            url('/assets/images/auth/vehipark-register-bg-3.jpg');
+        background-position: right center;
     }
 
     .auth-shell--guest .auth-shell__backdrop {
@@ -33,9 +35,9 @@
         content: "";
         @apply absolute inset-0;
         background:
-            radial-gradient(circle at 14% 18%, rgba(124, 58, 237, 0.22), transparent 22%),
-            radial-gradient(circle at 86% 12%, rgba(59, 130, 246, 0.22), transparent 24%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(238, 243, 255, 0.34));
+            radial-gradient(circle at 14% 18%, rgba(124, 58, 237, 0.12), transparent 22%),
+            radial-gradient(circle at 86% 12%, rgba(59, 130, 246, 0.12), transparent 24%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(238, 243, 255, 0.06));
     }
 
     .auth-shell__decor {
@@ -62,8 +64,44 @@
     }
 
     .auth-shell__content {
-        @apply relative z-10 flex w-full max-w-[1180px] flex-col items-center justify-center gap-5;
+        @apply relative z-10 flex w-full max-w-[1180px] flex-col items-center justify-center gap-6;
         min-height: calc(100vh - 4rem);
+    }
+
+    .auth-stack {
+        @apply flex w-full flex-col items-center gap-6;
+    }
+
+    .auth-brand-panel {
+        @apply flex flex-col items-center gap-3 text-center;
+    }
+
+    .auth-brand-logo {
+        width: 58px;
+        height: 58px;
+        flex: none;
+    }
+
+    .brand-name {
+        font-size: 58px;
+        line-height: 1;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+    }
+
+    .brand-name .vehi {
+        color: #7C3AED;
+    }
+
+    .brand-name .park {
+        color: #10213F;
+    }
+
+    .brand-subtitle {
+        max-width: 460px;
+        font-size: 17px;
+        line-height: 1.5;
+        color: #10213F;
     }
 
     .auth-wrapper {
@@ -168,24 +206,23 @@
         background: rgba(255, 255, 255, 0.88);
         color: #10213F;
         backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
     }
 
     .login-card,
     .auth-login-card {
-        max-width: 440px;
-        min-height: 430px;
-        padding: 34px 36px;
+        max-width: 520px;
+        padding: 38px 42px;
         border-radius: 24px;
-        box-shadow: 0 24px 60px rgba(50, 60, 120, 0.20);
+        box-shadow: 0 28px 70px rgba(70, 80, 140, 0.22);
     }
 
     .register-card,
     .auth-register-card {
-        max-width: 620px;
-        min-height: 500px;
-        padding: 30px 34px;
-        border-radius: 24px;
-        box-shadow: 0 24px 64px rgba(50, 60, 120, 0.22);
+        max-width: 760px;
+        padding: 42px 52px;
+        border-radius: 26px;
+        box-shadow: 0 30px 80px rgba(70, 80, 140, 0.24);
     }
 
     .auth-card__title {
@@ -197,13 +234,13 @@
     }
 
     .auth-card__title h2 {
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 700;
         color: #10213F;
     }
 
     .auth-register-card .auth-card__title h2 {
-        font-size: 27px;
+        font-size: 31px;
     }
 
     .auth-card__title p {
@@ -238,9 +275,9 @@
     .input-auth,
     .auth-input {
         width: 100%;
-        height: 46px;
+        height: 48px;
         border: 1px solid #D8DDF2;
-        border-radius: 11px;
+        border-radius: 12px;
         background: rgba(255, 255, 255, 0.78);
         color: #10213F;
         font-size: 14px;
@@ -270,13 +307,13 @@
 
     .input-register {
         width: 100%;
-        height: 42px;
+        height: 48px;
         border: 1px solid #D8DDF2;
-        border-radius: 10px;
+        border-radius: 12px;
         background: rgba(255, 255, 255, 0.80);
         color: #10213F;
-        font-size: 13px;
-        padding: 0 13px 0 42px;
+        font-size: 14px;
+        padding: 0 14px 0 42px;
         outline: none;
         transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
@@ -348,7 +385,7 @@
     .auth-register-layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 14px 22px;
+        gap: 18px 24px;
         margin-top: 28px;
     }
 
@@ -359,7 +396,7 @@
     .password-rules,
     .auth-password-box {
         border-radius: 14px;
-        padding: 16px 20px;
+        padding: 18px 22px;
         background: rgba(248, 250, 252, 0.88);
         border: 1px solid #D8DDF2;
     }
@@ -379,6 +416,20 @@
     .password-rules ul,
     .auth-rule-list {
         @apply grid gap-2 md:grid-cols-2;
+    }
+
+    .password-rules-grid {
+        @apply grid gap-x-6 gap-y-2 md:grid-cols-2;
+    }
+
+    .password-rule {
+        @apply inline-flex items-center gap-2 text-[13px] leading-5;
+        color: #64748B;
+    }
+
+    .password-rule svg {
+        @apply h-4 w-4 shrink-0;
+        color: #10B981;
     }
 
     .password-rules li,
@@ -403,51 +454,59 @@
         color: rgba(16, 33, 63, 0.80);
     }
 
+    .auth-stack--login .auth-footer,
+    .auth-stack--register .auth-footer {
+        margin-top: -2px;
+    }
+
     @media (max-width: 1024px) {
-        .auth-wrapper {
-            grid-template-columns: 1fr;
-            max-width: 620px;
-            gap: 28px;
-        }
-
-        .auth-brand,
-        .auth-brand-block {
-            @apply mx-auto items-center text-center;
-        }
-
-        .auth-brand__copy,
-        .auth-brand-block__copy {
-            @apply mx-auto;
-            max-width: 520px;
+        .auth-shell__content {
+            max-width: 920px;
         }
 
         .login-card,
         .auth-login-card {
-            max-width: 430px;
-            margin: 0 auto;
+            max-width: 480px;
+            padding: 34px 34px;
         }
 
         .register-card,
         .auth-register-card {
-            max-width: 580px;
-            margin: 0 auto;
+            max-width: 680px;
+            padding: 38px 40px;
+        }
+
+        .brand-name {
+            font-size: 50px;
         }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 768px) {
         .auth-shell,
         .auth-page {
-            @apply items-start px-5 py-5;
+            @apply px-4 py-4;
         }
 
         .auth-shell__content {
-            min-height: calc(100vh - 2.5rem);
-            gap: 4px;
+            min-height: calc(100vh - 2rem);
+            gap: 18px;
         }
 
-        .auth-brand,
-        .auth-brand-block {
-            display: none;
+        .auth-stack {
+            gap: 18px;
+        }
+
+        .auth-brand-logo {
+            width: 52px;
+            height: 52px;
+        }
+
+        .brand-name {
+            font-size: 42px;
+        }
+
+        .brand-subtitle {
+            font-size: 15px;
         }
 
         .login-card,
@@ -455,10 +514,8 @@
         .auth-login-card,
         .auth-register-card {
             width: 100%;
-            max-width: 390px;
-            min-height: auto;
-            padding: 28px 24px;
-            border-radius: 20px;
+            padding: 30px 24px;
+            border-radius: 22px;
         }
 
         .register-grid,
@@ -470,9 +527,32 @@
         .register-grid__full {
             grid-column: auto;
         }
+    }
 
-        .brand-title {
-            font-size: 34px;
+    @media (max-width: 640px) {
+        .auth-shell,
+        .auth-page {
+            @apply items-start px-4 py-4;
+        }
+
+        .auth-shell__content {
+            min-height: calc(100vh - 2rem);
+            gap: 16px;
+        }
+
+        .login-card,
+        .register-card,
+        .auth-login-card,
+        .auth-register-card {
+            width: 100%;
+            max-width: 100%;
+            min-height: auto;
+            padding: 28px 22px;
+            border-radius: 20px;
+        }
+
+        .brand-name {
+            font-size: 36px;
         }
 
         .auth-card__title h2 {
@@ -481,6 +561,10 @@
 
         .auth-register-card .auth-card__title h2 {
             font-size: 26px;
+        }
+
+        .password-rules-grid {
+            grid-template-columns: 1fr;
         }
     }
 }
