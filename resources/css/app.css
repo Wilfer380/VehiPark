@@ -432,6 +432,37 @@
         color: #10B981;
     }
 
+    .auth-password-requirements {
+        margin-top: 10px;
+        padding: 12px 14px;
+        border-radius: 12px;
+    }
+
+    .auth-password-requirements__title {
+        @apply mb-2 text-[12px];
+    }
+
+    .auth-password-requirements__title svg {
+        @apply h-4 w-4;
+    }
+
+    .auth-password-requirements__grid {
+        @apply gap-x-4 gap-y-1;
+    }
+
+    .password-rule--unmet {
+        color: #F97316;
+    }
+
+    .password-rule--met {
+        color: #10B981;
+    }
+
+    .password-rule--unmet svg,
+    .password-rule--met svg {
+        color: currentColor;
+    }
+
     .password-rules li,
     .auth-rule-list li {
         @apply inline-flex items-center gap-2 text-[13px];
