@@ -17,13 +17,13 @@
             <form method="POST" action="{{ route('password.store') }}" class="register-grid">
                 @csrf
 
-                <input type="hidden" name="token" value="{{ $request->route('token') }}">
+                <input type="hidden" name="email" value="{{ $email }}">
 
                 <div class="auth-field register-grid__full">
                     <label for="email">Email</label>
                     <div class="auth-input-wrap">
                         <svg class="auth-input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16v12H4z" stroke="currentColor" stroke-width="1.8"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        <input id="email" class="input-register" type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username" placeholder="admin@gmail.com">
+                    <input id="email" class="input-register" type="email" name="email" value="{{ old('email', $email) }}" required autofocus autocomplete="username" readonly>
                     </div>
                     @error('email')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
