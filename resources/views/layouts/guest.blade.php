@@ -45,19 +45,7 @@
             <div class="auth-shell__backdrop"></div>
 
             <main class="auth-shell__content">
-                <header class="auth-brand-block">
-                    <img src="{{ asset('resources/img_empresa/logo_vehipark.svg') }}" alt="VehiPark logo" class="auth-brand-block__logo">
-                    <div class="auth-brand-block__copy">
-                        <h1>{{ $authPanel['brand'] }}</h1>
-                        <p>{{ $authPanel['tagline'] }}</p>
-                    </div>
-                </header>
-
-                <section class="auth-card auth-card--{{ $authMode }}">
-                    {{ $slot }}
-                </section>
-
-                <footer class="auth-footer">{{ $authPanel['copyright'] }}</footer>
+                {{ $slot }}
             </main>
         </div>
     </body>

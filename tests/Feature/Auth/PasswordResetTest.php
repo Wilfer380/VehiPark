@@ -1,8 +1,6 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Support\Facades\Notification;
 
 test('reset password link screen can be rendered', function () {
     $response = $this->get('/forgot-password');
@@ -10,51 +8,49 @@ test('reset password link screen can be rendered', function () {
     $response->assertStatus(200);
 });
 
-test('reset password link can be requested', function () {
-    Notification::fake();
-
+test('reset password code can be requested', function () {
     $user = User::factory()->create();
 
     $this->post('/forgot-password', ['email' => $user->email]);
 
-    Notification::assertSentTo($user, ResetPassword::class);
+    $this->assertNotEmpty(session('password_reset_code_visible'));
+    $this->assertSame($user->email, session('password_recovery.email'));
 });
 
-test('reset password screen can be rendered', function () {
-    Notification::fake();
-
+test('reset password screen can be rendered after code verification', function () {
     $user = User::factory()->create();
 
     $this->post('/forgot-password', ['email' => $user->email]);
 
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-        $response = $this->get('/reset-password/'.$notification->token);
+    $code = session('password_reset_code_visible');
 
-        $response->assertStatus(200);
+    $this->post('/forgot-password/verify', [
+        'email' => $user->email,
+        'code' => $code,
+    ])->assertRedirect(route('password.reset'));
 
-        return true;
-    });
+    $this->get('/reset-password')->assertStatus(200);
 });
 
-test('password can be reset with valid token', function () {
-    Notification::fake();
-
+test('password can be reset with valid code', function () {
     $user = User::factory()->create();
 
     $this->post('/forgot-password', ['email' => $user->email]);
 
-    Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-        $response = $this->post('/reset-password', [
-            'token' => $notification->token,
+    $code = session('password_reset_code_visible');
+
+    $this->post('/forgot-password/verify', [
+        'email' => $user->email,
+        'code' => $code,
+    ]);
+
+    $response = $this->post('/reset-password', [
             'email' => $user->email,
             'password' => 'password',
             'password_confirmation' => 'password',
         ]);
 
-        $response
-            ->assertSessionHasNoErrors()
-            ->assertRedirect(route('login'));
-
-        return true;
-    });
+    $response
+        ->assertSessionHasNoErrors()
+        ->assertRedirect(route('login'));
 });

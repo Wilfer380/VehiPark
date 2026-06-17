@@ -33,7 +33,17 @@
     .topbar-user__avatar span,.topbar-user-menu__avatar span{line-height:1}
     @media (max-width: 1024px){.global-search-wrapper{width:260px;max-width:260px}}
     @media (max-width: 768px){.global-search-wrapper{width:auto;max-width:none}.global-search{display:none}.global-search-toggle{display:inline-flex}}
-</style>
+    .topbar{border-bottom:1px solid #D8DDF2;background:rgba(255,255,255,.74);backdrop-filter:blur(16px);box-shadow:0 12px 30px rgba(70,80,140,.06)}
+    .topbar-toggle,.topbar-bell{background:rgba(255,255,255,.88);border:1px solid #D8DDF2;color:#10213F}
+    .global-search-wrapper{width:320px;max-width:320px;position:relative}
+    .global-search{width:100%;height:40px;border-radius:10px;background:rgba(255,255,255,.88);border:1px solid #D8DDF2;color:#10213F;padding:0 42px 0 14px;font-size:14px;outline:none}
+    .global-search::placeholder{color:#94A3B8}
+    .global-search:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
+    .global-search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#94A3B8;pointer-events:none}
+    .global-search-toggle{display:none;width:40px;height:40px;border-radius:10px;border:1px solid #D8DDF2;background:rgba(255,255,255,.88);color:#10213F;align-items:center;justify-content:center}
+    .topbar-user__avatar,.topbar-user-menu__avatar{box-shadow:0 12px 24px rgba(124,58,237,.18)}
+    @media (max-width: 768px){.global-search{display:none}.global-search-toggle{display:inline-flex}}
+    </style>
 
 <header class="topbar" x-data="{ userMenuOpen: false }">
     <div class="topbar-left">

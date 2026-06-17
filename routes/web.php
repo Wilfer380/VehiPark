@@ -22,9 +22,9 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
-Route::get('vehiculos/{vehiculo}/imagen', [VehiculosController::class, 'imagen'])->name('vehiculos.imagen');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('vehiculos/{vehiculo}/imagen', [VehiculosController::class, 'imagen'])->name('vehiculos.imagen');
 
     Route::prefix('panel')->group(function () {
         Route::get('clientes/exportar/excel', [ClientesController::class, 'exportarExcel'])->name('clientes.exportar.excel');

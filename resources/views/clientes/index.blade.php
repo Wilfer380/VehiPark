@@ -125,7 +125,7 @@
 
             <a :href="exportHref()" class="btn-export">
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v10m0 0 4-4m-4 4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 17v2h14v-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-                <span>Exportar CSV</span>
+                <span>Exportar Excel</span>
             </a>
         </form>
 

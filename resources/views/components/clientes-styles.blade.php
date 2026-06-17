@@ -168,4 +168,40 @@
     @media (max-width:1280px){.client-stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.client-filters{grid-template-columns:1fr 1fr 1fr 1fr auto auto}}
     @media (max-width:1024px){.clients-page{padding:20px 16px 28px}.client-stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.client-filters{grid-template-columns:1fr 1fr}.client-modal{width:min(760px,100%)}.client-form-grid{grid-template-columns:1fr}}
     @media (max-width:768px){.clients-header{flex-direction:column;align-items:flex-start}.client-stats-grid{grid-template-columns:1fr}.client-filters{grid-template-columns:1fr}.client-modal__head{padding:18px}.client-modal__body{padding:16px 18px 18px}}
-</style>
+    .dashboard-shell{background:radial-gradient(circle at 12% 10%,rgba(124,58,237,.10),transparent 24%),radial-gradient(circle at 88% 4%,rgba(37,99,235,.10),transparent 26%),linear-gradient(180deg,#EEF3FF 0%,#F8FBFF 100%);color:#10213F}
+    .sidebar{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,252,.96));border-right:1px solid #D8DDF2;box-shadow:0 18px 44px rgba(70,80,140,.08)}
+    .logo-text,.sidebar-link,.sidebar-footer__meta strong,.sidebar-footer__meta p,.sidebar-collapse,.topbar-toggle,.topbar-bell,.topbar-user__meta strong{color:#10213F}
+    .logo-text span,.sidebar-brand__mark,.sidebar-link.active,.btn-new-client,.btn-primary,.btn-register,.page-btn.active,.topbar-bell__badge{background:linear-gradient(90deg,#7C3AED,#2563EB);color:#fff}
+    .sidebar-brand__mark{box-shadow:0 12px 24px rgba(124,58,237,.18)}
+    .sidebar-collapse,.topbar-toggle,.topbar-bell,.action-btn,.page-btn,.btn-secondary,.filter-input,.filter-select,.btn-export,.btn-filters,.client-modal__close,.topbar-user-menu__action{background:rgba(255,255,255,.82);border-color:#D8DDF2;color:#10213F}
+    .sidebar-link:hover,.action-btn:hover,.page-btn:hover,.btn-secondary:hover,.btn-export:hover,.btn-filters:hover,.topbar-user-menu__action:hover{background:rgba(255,255,255,.98)}
+    .sidebar-link{color:#53637D}
+    .sidebar-link.active{box-shadow:0 12px 28px rgba(37,99,235,.18)}
+    .sidebar-footer{border-top:1px solid #D8DDF2}
+    .sidebar-footer__car{filter:drop-shadow(0 18px 18px rgba(70,80,140,.12))}
+    .sidebar-footer__meta span,.page-subtitle,.crud-muted,.stat-trend,.client-subtitle,.table-footer,.topbar-user__meta span,.topbar-user-menu__head span,.topbar-user-menu__section-label,.topbar-user-menu__pill{color:#64748B}
+    .sidebar-overlay{background:rgba(16,33,63,.16)}
+    .topbar{border-bottom:1px solid #D8DDF2;background:rgba(255,255,255,.74);backdrop-filter:blur(16px);box-shadow:0 12px 30px rgba(70,80,140,.06)}
+    .search-box,.global-search{background:rgba(255,255,255,.88);border-color:#D8DDF2;color:#10213F}
+    .search-box::placeholder,.global-search::placeholder{color:#94A3B8}
+    .search-box-icon,.global-search-icon,.topbar-user__chevron{color:#94A3B8}
+    .topbar-user{border-left:1px solid #D8DDF2}
+    .topbar-user__avatar{box-shadow:0 12px 24px rgba(124,58,237,.18)}
+    .topbar-user-menu{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,252,.94));border:1px solid #D8DDF2;box-shadow:0 26px 52px rgba(70,80,140,.16);color:#10213F}
+    .topbar-user-menu__section{border-color:#E5E7F5}
+    .topbar-user-menu__pill{background:rgba(124,58,237,.10);color:#6D28D9}
+    .topbar-user-menu__action--danger{color:#B91C1C}
+    .clients-page{color:#10213F}
+    .page-title,.client-name,.client-modal__head h2,.client-form-field span,.sales-table th,.sales-table td,.vehicle-name,.vehicle-detail-main h2,.profile-section__head h2,.panel-title,.crud-hero h1,.crud-panel h2,.crud-row strong,.kpi-value,.panel-card__title,.section-head h3,.hero-panel__title,.topbar-user__meta strong,.topbar-user-menu__head strong{color:#10213F}
+    .client-stat-card,.clients-table-card,.client-modal,.panel-card,.sale-kpi-card,.sale-detail-card,.vehicle-detail-card,.profile-card,.crud-hero,.crud-panel,.kpi-card,.hero-panel,.summary-item,.spotlight-card,.movement-item,.alert-item,.sales-action-ghost,.sales-table thead,.sales-table td,.sales-filter-bar,.vehicle-form-card,.vehicle-preview-card,.vehicle-tip-card,.parking-kpi-card,.parking-map-card,.parking-list-card,.parking-status-card,.modal-card{background:rgba(255,255,255,.88);border-color:#D8DDF2;box-shadow:0 18px 44px rgba(70,80,140,.08)}
+    .client-filters,.filter-input,.filter-select,.client-form-field input,.client-form-field select,.client-form-field textarea,.sale-form .sale-field input,.sale-form .sale-field select,.sale-form .sale-field textarea,.vehicle-form .vehicle-field input,.vehicle-form .vehicle-field select,.vehicle-form .vehicle-field textarea,.profile-field input,.parking-search,.parking-state-filter,.map-filter{background:rgba(255,255,255,.88);border-color:#D8DDF2;color:#10213F}
+    .client-table-card,.clients-table thead,.clients-table td,.sales-table th,.sales-table td,.vehicle-table thead,.vehicle-table td,.summary-item,.chart-stat,.movement-item,.alert-item,.recent-entry-row,.parking-slot,.page-btn,.icon-btn,.btn-secondary-parking,.modal-secondary{border-color:#E5E7F5}
+    .client-export-selection,.sale-export-selection,.panel-subtext,.crud-muted,.auth-card__footnote{color:#64748B}
+    .crud-alert{background:rgba(37,99,235,.10);border-color:rgba(37,99,235,.20);color:#1D4ED8}
+    .password-rules,.auth-password-box,.auth-code-box,.client-help-card,.sidebar-help-card{background:rgba(255,255,255,.88);border-color:#D8DDF2}
+    .password-rule,.password-rules li,.auth-rule-list li,.auth-card__footnote,.auth-footer{color:#64748B}
+    .password-rule--unmet{color:#F97316}
+    .password-rule--met{color:#10B981}
+    .password-rule--unmet svg,.password-rule--met svg{color:currentColor}
+    @media (max-width: 768px){.topbar{background:rgba(255,255,255,.92)}}
+    </style>

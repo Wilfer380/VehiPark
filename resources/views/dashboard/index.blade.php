@@ -451,12 +451,12 @@
                         maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                labels: { color: '#cbd5e1', usePointStyle: true, pointStyle: 'circle' },
+                                labels: { color: '#64748b', usePointStyle: true, pointStyle: 'circle' },
                             },
                         },
                         scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,.08)' } },
-                            y: { ticks: { color: '#94a3b8', callback: (v) => v + 'M' }, grid: { color: 'rgba(148,163,184,.08)' } },
+                            x: { ticks: { color: '#64748b' }, grid: { color: 'rgba(148,163,184,.16)' } },
+                            y: { ticks: { color: '#64748b', callback: (v) => v + 'M' }, grid: { color: 'rgba(148,163,184,.16)' } },
                         },
                     },
                 });
@@ -485,4 +485,23 @@
             }
         });
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .dashboard-shell{background:radial-gradient(circle at 12% 10%,rgba(124,58,237,.10),transparent 24%),radial-gradient(circle at 88% 4%,rgba(37,99,235,.10),transparent 26%),linear-gradient(180deg,#EEF3FF 0%,#F8FBFF 100%) !important;color:#10213F !important}
+        .sidebar{background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,250,252,.96)) !important;border-right:1px solid #D8DDF2 !important;box-shadow:0 18px 44px rgba(70,80,140,.08) !important}
+        .sidebar-collapse,.topbar-toggle,.topbar-bell{background:rgba(255,255,255,.88) !important;border:1px solid #D8DDF2 !important;color:#10213F !important}
+        .logo-text,.sidebar-link,.sidebar-footer__meta strong,.sidebar-footer__meta p,.topbar-user__meta strong,.page-title,.page-subtitle,.hero-panel__title,.panel-card__title,.kpi-value,.section-head h3,.summary-item__value,.movement-main strong,.alert-item strong,.sales-table td,.sales-table th,.client-name,.vehicle-name,.vehicle-detail-main h2,.profile-section__head h2,.crud-hero h1,.crud-panel h2{color:#10213F !important}
+        .logo-text span,.sidebar-brand__mark,.sidebar-link.active,.btn-new-client,.btn-primary,.btn-register,.page-btn.active,.topbar-bell__badge{background:linear-gradient(90deg,#7C3AED,#2563EB) !important;color:#fff !important}
+        .sidebar-link:hover,.action-btn:hover,.page-btn:hover,.btn-secondary:hover,.btn-export:hover,.btn-filters:hover,.topbar-user-menu__action:hover{background:rgba(255,255,255,.98) !important}
+        .sidebar-link{color:#53637D !important}
+        .sidebar-footer,.topbar,.hero-panel,.kpi-card,.panel-card,.sale-kpi-card,.sale-detail-card,.vehicle-detail-card,.profile-card,.crud-hero,.crud-panel,.summary-item,.spotlight-card,.movement-item,.alert-item,.sales-action-ghost,.sales-table thead,.sales-filter-bar,.vehicle-form-card,.vehicle-preview-card,.vehicle-tip-card,.parking-kpi-card,.parking-map-card,.parking-list-card,.parking-status-card,.modal-card{background:rgba(255,255,255,.88) !important;border-color:#D8DDF2 !important;box-shadow:0 18px 44px rgba(70,80,140,.08) !important}
+        .topbar-user-menu{background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,252,.94)) !important;border:1px solid #D8DDF2 !important;box-shadow:0 26px 52px rgba(70,80,140,.16) !important;color:#10213F !important}
+        .hero-panel__subtitle,.panel-subtext,.summary-item__label,.movement-main span,.movement-time,.alert-item p,.panel-card__muted,.kpi-note,.page-subtitle,.stat-trend,.crud-muted,.crud-hero p,.crud-row small,.crud-detail span,.crud-detail strong,.client-subtitle,.topbar-user__meta span,.topbar-user-menu__head span,.topbar-user-menu__section-label,.topbar-user-menu__pill{color:#64748B !important}
+        .hero-chip,.spotlight-card span,.sales-action-ghost,.btn-secondary,.btn-export,.btn-filters,.action-btn,.page-btn,.filter-input,.filter-select,.client-form-field input,.client-form-field select,.client-form-field textarea,.sale-form .sale-field input,.sale-form .sale-field select,.sale-form .sale-field textarea,.vehicle-form .vehicle-field input,.vehicle-form .vehicle-field select,.vehicle-form .vehicle-field textarea,.profile-field input,.parking-search,.parking-state-filter,.map-filter,.modal-close{background:rgba(255,255,255,.88) !important;border-color:#D8DDF2 !important;color:#10213F !important}
+        .hero-chip,.summary-item,.crud-detail div,.sales-table th,.sales-table td,.vehicle-table th,.vehicle-table td,.clients-table th,.clients-table td{border-color:#E5E7F5 !important}
+        .password-rule--unmet{color:#F97316 !important}.password-rule--met{color:#10B981 !important}
+        .password-rule--unmet svg,.password-rule--met svg{color:currentColor !important}
+    </style>
 @endpush
